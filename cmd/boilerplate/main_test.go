@@ -5,6 +5,6 @@ import (
 	. "github.com/stretchr/testify/assert"
 )
 
-func TestAsdf(t *testing.T) {
-	Equal(t, 1, 1)
+func TestModuleFuel(t *testing.T) {
+	Equal(t, 2, Blerg(12))
 }

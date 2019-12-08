@@ -1,6 +1,7 @@
 package common
 
 import (
+	"strings"
 	"strconv"
 	"bufio"
 	"io"
@@ -17,6 +18,18 @@ func ReadInts(r io.Reader) (integers []int) {
 		}
 
 		val, err := strconv.Atoi(scanner.Text())
+		PanicIf(err)
+
+		integers = append(integers, val)
+	}
+
+	return
+}
+
+func CommaSeparatedToInt(str string) (integers []int) {
+	splitUp := strings.Split(str, ",")
+	for _, v := range(splitUp) {
+		val, err := strconv.Atoi(v)
 		PanicIf(err)
 
 		integers = append(integers, val)

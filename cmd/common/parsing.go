@@ -18,7 +18,7 @@ func ReadInts(r io.Reader) (integers []int) {
 		}
 
 		val, err := strconv.Atoi(scanner.Text())
-		PanicIf(err)
+		PanicIfErr(err)
 
 		integers = append(integers, val)
 	}
@@ -30,7 +30,7 @@ func CommaSeparatedToInt(str string) (integers []int) {
 	splitUp := strings.Split(str, ",")
 	for _, v := range(splitUp) {
 		val, err := strconv.Atoi(v)
-		PanicIf(err)
+		PanicIfErr(err)
 
 		integers = append(integers, val)
 	}

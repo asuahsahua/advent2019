@@ -261,7 +261,7 @@ func InputToWire(text string) *Wire {
 	for _, str := range(split) {
 		direction := str[0]
 		scalar, err := strconv.Atoi(str[1:])
-		PanicIf(err)
+		PanicIfErr(err)
 
 		x, y := point.X, point.Y
 

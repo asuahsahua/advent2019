@@ -17,3 +17,10 @@ func Part2(format string, a ...interface{}) {
 		fmt.Sprintf(format, a...),
 	)
 }
+
+func Debug(format string, a ...interface{}) {
+	fmt.Printf(
+		"DEBUG: %s\n",
+		fmt.Sprintf(format, a...),
+	)
+}

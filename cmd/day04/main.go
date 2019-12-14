@@ -130,7 +130,7 @@ func FindAdjacentGroups(digits []int) []AdjacentDigits {
 	current := -1 // A digit can't be -1, so this is our 'null' value
 	count := 1
 	for i := 0; i < len(digits); i++ {
-		if digits[i] == current {
+		if int(digits[i]) == current {
 			// If we have a match, increment the count and move on
 			count++
 		} else if count > 1 {
@@ -140,7 +140,7 @@ func FindAdjacentGroups(digits []int) []AdjacentDigits {
 			count = 1
 		}
 
-		current = digits[i]
+		current = int(digits[i])
 	}
 	
 	// Finally, clean up the tail end of lingering possibilities

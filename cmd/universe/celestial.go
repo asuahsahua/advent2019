@@ -21,11 +21,17 @@ func NewCelestialObject(name string) *CelestialObject {
 	}
 }
 
-// Recursive!
-func (obj *CelestialObject) TotalOrbitCount() int {
+func (obj *CelestialObject) Orbits() []*CelestialObject {
+	// If we're the root, then we have no orbits
 	if obj.Orbiting == nil {
-		return 0
+		return []*CelestialObject{}
 	}
 
-	return obj.Orbiting.TotalOrbitCount() + 1
+	// Otherwise, we have the parent and the orbits of the parent
+	parentOrbits := obj.Orbiting.Orbits()
+	// Heh, this might get me into trouble! This is going to append
+	// the Orbiting celestial to the inner array of the slice returned
+	// from the parent's Orbits(). 
+	// This may be okay if we [[ never, ever, ever, EVER, EVERR modify the array contents after this ]]
+	return append(parentOrbits, obj.Orbiting)
 }

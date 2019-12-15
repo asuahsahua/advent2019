@@ -5,8 +5,9 @@ import (
 )
 
 func main() {
-	input := ``
-	Part1("%s", input)
-	Part2("%d", 42)
-	panic("Could not figure out the right noun and verb :(")
+	input := `hello this is an input`
+	charcount := len(input)
+	Part1("%s", charcount)
+	firstchar := input[0]
+	Part2("%d", firstchar)
 }

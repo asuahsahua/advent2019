@@ -51,7 +51,7 @@ func (uni *Universe) GetCelestial(name string) *CelestialObject {
 func (uni *Universe) SumOrbits() int {
 	sum := 0
 	for _, obj := range(uni.Objects) {
-		sum += obj.TotalOrbitCount()
+		sum += len(obj.Orbits())
 	}
 	return sum
 }

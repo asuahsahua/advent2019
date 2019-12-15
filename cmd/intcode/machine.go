@@ -8,8 +8,9 @@ type IntcodeMachine struct{
 	InstPtr int   // Instruction Pointer
 	Memory  []int // Memory
 	OnFire  bool  // Has caught fire?
-	Input   int
-	Output  int
+
+	Input   chan int
+	Output  chan int
 }
 
 func NewIntcodeMachine(program []int) *IntcodeMachine {
@@ -20,6 +21,10 @@ func NewIntcodeMachine(program []int) *IntcodeMachine {
 		InstPtr: 0,
 		Memory: memory,
 		OnFire: false,
+
+		// Allow a buffered width of 1
+		Input: make(chan int, 1),
+		Output: make(chan int, 1),
 	}
 }
 
@@ -31,11 +36,11 @@ func NewIntcodeMachineStr(program string) *IntcodeMachine {
 
 func RunProgram(program string, input int) (output int) {
 	machine := NewIntcodeMachineStr(program)
-	machine.Input = input
+	machine.Input <- input
 
 	machine.Run()
 
-	return machine.Output
+	return <- machine.Output 
 }
 
 func (m *IntcodeMachine) Run() {

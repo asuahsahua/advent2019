@@ -7,5 +7,5 @@ const INST_INPUT = 3
 // given by its only parameter. For example, the instruction 3,50 would take
 // an input value and store it at address 50.
 func I03_Input(ctx *InstructionContext)  {
-	*ctx.Parameters[0] = ctx.Machine.Input
+	*ctx.Parameters[0] = <- ctx.Machine.Input
 }

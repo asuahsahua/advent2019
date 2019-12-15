@@ -1,41 +1,25 @@
 package intcode
 
-import (
-	. "github.com/asuahsahua/advent2019/cmd/common"
-)
-
 const MAX_PARAMETER_COUNT = 3
 
-func (machine *IntcodeMachine) ParameterCount(functionID int) int {
-	switch functionID {
-	case INST_ADD:
-		return 3
-	case INST_MULT:
-		return 3
-	case INST_INPUT:
-		return 1
-	case INST_OUTPUT:
-		return 1
-	case INST_HCF:
-		return 0
-	default:
-		Panic("could not determine parameter count for function %d", functionID)
-	}
-
-	return -1
+type Instruction struct {
+	paramCount int
+	function func(ctx *InstructionContext)
 }
 
-func (ctx InstructionContext) Execute() {
-	switch ctx.FunctionID {
-	case INST_ADD:
-		ctx.I01_Add()
-	case INST_MULT:
-		ctx.I02_Mult()
-	case INST_INPUT:
-		ctx.I03_Input()
-	case INST_OUTPUT:
-		ctx.I04_Output()
-	case INST_HCF:
-		ctx.I99_HCF()
-	}
+var Instructions map[int]Instruction = map[int]Instruction{
+	INST_ADD:           Instruction{3, I01_Add},
+	INST_MULT:          Instruction{3, I02_Mult},
+	INST_INPUT:         Instruction{1, I03_Input},
+	INST_OUTPUT:        Instruction{1, I04_Output},
+	INST_JUMP_IF_TRUE:  Instruction{2, I05_JumpIfTrue},
+	INST_JUMP_IF_FALSE: Instruction{2, I06_JumpIfFalse},
+	INST_LESS_THAN:     Instruction{3, I07_LessThan},
+	INST_EQUALS:        Instruction{3, I08_Equals},
+
+	INST_HCF:           Instruction{0, I99_HCF},
+}
+
+func (ctx *InstructionContext) Execute() {
+	Instructions[ctx.FunctionID].function(ctx)
 }

@@ -5,7 +5,7 @@ import (
 )
 
 type IntcodeMachine struct{
-	PC      int   // Instruction Pointer
+	InstPtr int   // Instruction Pointer
 	Memory  []int // Memory
 	OnFire  bool  // Has caught fire?
 	Input   int
@@ -17,7 +17,7 @@ func NewIntcodeMachine(program []int) *IntcodeMachine {
 	copy(memory, program)
 
 	return &IntcodeMachine{
-		PC: 0,
+		InstPtr: 0,
 		Memory: memory,
 		OnFire: false,
 	}
@@ -29,6 +29,15 @@ func NewIntcodeMachineStr(program string) *IntcodeMachine {
 	)
 }
 
+func RunProgram(program string, input int) (output int) {
+	machine := NewIntcodeMachineStr(program)
+	machine.Input = input
+
+	machine.Run()
+
+	return machine.Output
+}
+
 func (m *IntcodeMachine) Run() {
 	for m.OnFire == false {
 		m.RunStep()
@@ -36,7 +45,7 @@ func (m *IntcodeMachine) Run() {
 }
 
 func (m *IntcodeMachine) RunStep() {
-	ctx := m.BuildInstructionContext(m.PC)
+	ctx := m.BuildInstructionContext(m.InstPtr)
 	ctx.Execute()
-	m.PC += 1 + len(ctx.Parameters)
+	m.InstPtr = ctx.NextInstPtr
 }

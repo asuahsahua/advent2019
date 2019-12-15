@@ -17,6 +17,8 @@ type InstructionContext struct{
 	FunctionID int
 	// CAUTION! DirectMemoryAccess to the memory in Machine!
 	Parameters []*int
+	// The next instruction pointer after this instruction runs
+	NextInstPtr int
 }
 
 // -- Day 5 --
@@ -36,7 +38,7 @@ func (machine *IntcodeMachine) BuildInstructionContext(memptr int) *InstructionC
 
 	functionID := 10 * opcodeExpanded[1] + opcodeExpanded[0]
 	paramModes := opcodeExpanded[2:]
-	parameterCount := machine.ParameterCount(functionID)
+	parameterCount := Instructions[functionID].paramCount
 
 	// Build parameters as pointers
 	params := []*int{}
@@ -56,5 +58,6 @@ func (machine *IntcodeMachine) BuildInstructionContext(memptr int) *InstructionC
 		Machine: machine,
 		FunctionID: functionID,
 		Parameters: params,
+		NextInstPtr: memptr + 1 + parameterCount,
 	}
 }

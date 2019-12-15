@@ -2,6 +2,6 @@ package intcode
 
 const INST_HCF = 99
 
-func (ctx InstructionContext) I99_HCF() {
+func I99_HCF(ctx *InstructionContext) {
 	ctx.Machine.OnFire = true
 }

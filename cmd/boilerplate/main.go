@@ -7,7 +7,7 @@ import (
 func main() {
 	input := `hello this is an input`
 	charcount := len(input)
-	Part1("%s", charcount)
+	Part1("%d", charcount)
 	firstchar := input[0]
 	Part2("%d", firstchar)
 }

@@ -22,9 +22,10 @@ func NewIntcodeMachine(program []int) *IntcodeMachine {
 		Memory: memory,
 		OnFire: false,
 
-		// Allow a buffered width of 1
-		Input: make(chan int, 1),
-		Output: make(chan int, 1),
+		// Allow a buffered width of 10 for now, for laziness. 
+		// Hopefully things don't need to be buffered much more than this.
+		Input: make(chan int, 10),
+		Output: make(chan int, 10),
 	}
 }
 

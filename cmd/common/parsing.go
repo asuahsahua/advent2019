@@ -26,6 +26,10 @@ func ReadInts(r io.Reader) (integers []int) {
 	return
 }
 
+func SplitLines(str string) []string {
+	return strings.Split(str, "\n")
+}
+
 func CommaSeparatedToInt(str string) (integers []int) {
 	splitUp := strings.Split(str, ",")
 	for _, v := range(splitUp) {

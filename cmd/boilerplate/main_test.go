@@ -5,6 +5,6 @@ import (
 	. "github.com/stretchr/testify/assert"
 )
 
-func TestModuleFuel(t *testing.T) {
+func TestExample(t *testing.T) {
 	Equal(t, 2, 2)
 }

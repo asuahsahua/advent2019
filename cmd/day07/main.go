@@ -23,8 +23,8 @@ func main() {
 
 	// Try every combination of phase settings on the amplifiers. What is the
 	// highest signal that can be sent to the thrusters?
-	bestPhase := OptimizeAmpProgram(AmplifierControllerSoftware)
-	Part1("%d", AmpProgramRun(AmplifierControllerSoftware, bestPhase))
+	bestAmpPhase := OptimizeAmpProgram(AmplifierControllerSoftware)
+	Part1("%d", AmpProgramRun(AmplifierControllerSoftware, bestAmpPhase))
 
 	// It's no good - in this configuration, the amplifiers can't generate a
 	// large enough output signal to produce the thrust you'll need. The Elves
@@ -45,7 +45,8 @@ func main() {
 	// creates the feedback loop: the signal will be sent through the amplifiers
 	// many times.
 
-
+	bestFeedbackPhase := OptimizeFeedbackProgram(AmplifierControllerSoftware)
+	Part2("%d", FeedbackProgramRun(AmplifierControllerSoftware, bestFeedbackPhase))
 }
 
 // The input

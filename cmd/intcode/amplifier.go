@@ -1,23 +1,8 @@
 package intcode
 
 import (
-	. "github.com/asuahsahua/advent2019/cmd/common"
+	"sync"
 )
-
-func OptimizeAmpProgram(prog string) []int {
-	bestScore := 0
-	bestSlice := make([]int, 5)
-
-	IPermutations([]int{0, 1, 2, 3, 4}, func(perm []int) {
-		result := AmpProgramRun(prog, perm)
-		if result > bestScore {
-			bestScore = result
-			copy(bestSlice, perm)
-		}
-	})
-
-	return bestSlice
-}
 
 type AmpChain struct {
 	Input *chan int
@@ -30,11 +15,7 @@ func AmpProgramRun(prog string, phaseSettings []int) int {
 	amp.PushPhaseSettings(phaseSettings)
 	*amp.Input <- 0
 
-	for _, machine := range amp.Chain {
-		go machine.Run()
-	}
-
-	return <- *amp.Output
+	return amp.Run()
 }
 
 func (amp *AmpChain) PushPhaseSettings(phaseSettings []int) {
@@ -42,6 +23,22 @@ func (amp *AmpChain) PushPhaseSettings(phaseSettings []int) {
 	for i := 0; i < len(phaseSettings); i++ {
 		amp.Chain[i].Input <- phaseSettings[i]
 	}
+}
+
+func (amp *AmpChain) Run() int {
+	var wg sync.WaitGroup
+
+	for _, machine := range amp.Chain {
+		wg.Add(1)
+		go func(m *IntcodeMachine) {
+			m.Run()
+			wg.Done()
+		}(machine)
+	}
+
+	wg.Wait()
+
+	return <- *amp.Output
 }
 
 // Build a chain of amplifiers using the same program
@@ -62,4 +59,17 @@ func NewAmpChain(prog string, size int) *AmpChain {
 		Output: &(amps[size-1].Output),
 		Chain:  amps,
 	}
+}
+
+func FeedbackProgramRun(prog string, phaseSettings []int) int {
+	amp := NewAmpChain(prog, len(phaseSettings))
+
+	// Need to connect the last output to the input
+	amp.Chain[0].Input = amp.Chain[len(amp.Chain)-1].Output
+	amp.Input = &amp.Chain[0].Input
+
+	amp.PushPhaseSettings(phaseSettings)
+	*amp.Input <- 0
+
+	return amp.Run()
 }

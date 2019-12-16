@@ -3,7 +3,7 @@ package intcode
 const MAX_PARAMETER_COUNT = 3
 
 type Instruction struct {
-	paramCount int
+	paramCount int64
 	function func(ctx *InstructionContext)
 }
 

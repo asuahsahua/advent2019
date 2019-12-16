@@ -5,19 +5,19 @@ import (
 )
 
 type IntcodeMachine struct{
-	Memory  []int // Memory
-	InstPtr int   // Instruction Pointer
-	RelativeBase int // Relative Base for Relative Mode parameters
+	Memory  []int64 // Memory
+	InstPtr int64   // Instruction Pointer
+	RelativeBase int64 // Relative Base for Relative Mode parameters
 	OnFire  bool  // Has caught fire?
 
-	Input   chan int
-	Output  chan int
+	Input   chan int64
+	Output  chan int64
 }
 
-func NewIntcodeMachine(program []int) *IntcodeMachine {
+func NewIntcodeMachine(program []int64) *IntcodeMachine {
 	// Day 9: "The computer's available memory should be much larger than the initial program"
 	// Just give 4KB of memory to each program for now
-	memory := make([]int, 4 * 1024)
+	memory := make([]int64, 4 * 1024)
 	copy(memory, program)
 
 	return &IntcodeMachine{
@@ -29,18 +29,18 @@ func NewIntcodeMachine(program []int) *IntcodeMachine {
 
 		// Allow a buffered width of 10 for now, for laziness. 
 		// Hopefully things don't need to be buffered much more than this.
-		Input: make(chan int, 10),
-		Output: make(chan int, 10),
+		Input: make(chan int64, 10),
+		Output: make(chan int64, 10),
 	}
 }
 
 func NewIntcodeMachineStr(program string) *IntcodeMachine {
 	return NewIntcodeMachine(
-		CommaSeparatedToInt(program),
+		CommaSeparatedToInt64(program),
 	)
 }
 
-func RunProgram(program string, input int) (output int) {
+func RunProgram(program string, input int64) (output int64) {
 	machine := NewIntcodeMachineStr(program)
 	machine.Input <- input
 

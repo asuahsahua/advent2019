@@ -27,3 +27,9 @@ func TestMeetsAdditionalPasswordCriteria(t *testing.T) {
 	// 111122 meets the criteria (even though 1 is repeated more than twice, it still contains a double 22).
 	Equal(t, true, MeetsPasswordCriteria(111122, IntRange{0, 999999}, true))
 }
+
+func TestConfirmedAnswer(t *testing.T) {
+	input := parseInput1(`240920-789857`)
+	Equal(t, 1154, GetPasswordCount(input, false))
+	Equal(t, 750, GetPasswordCount(input, true))
+}

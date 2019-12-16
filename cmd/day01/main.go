@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strings"
 	. "github.com/asuahsahua/advent2019/cmd/common"
 )
 
@@ -30,14 +29,8 @@ func main() {
 	//
 	// What is the sum of the fuel requirements for all of the modules on your
 	// spacecraft?
-	masses := ReadInts(strings.NewReader(Input1))
-
-	part1Sum := 0
-	for _, mass := range(masses) {
-		part1Sum += ModuleFuel(mass)
-	}
-
-	Part1("%d", part1Sum)
+	masses := SplitInts(Input1, "\n")
+	Part1("%d", SumModuleFuel(masses))
 
 	// During the second Go / No Go poll, the Elf in charge of the Rocket
 	// Equation Double-Checker stops the launch sequence. Apparently, you forgot
@@ -59,15 +52,19 @@ func main() {
 	// spacecraft when also taking into account the mass of the added fuel?
 	// (Calculate the fuel requirements for each module separately, then add
 	// them all up at the end.)
-	part2Sum := 0
-	for _, mass := range(masses) {
-		part2Sum += ModuleFuelFuel(mass)
-	}
-	Part2("%d", part2Sum)
+	Part2("%d", SumModuleFuelFuel(masses))
 }
 
 func ModuleFuel(mass int) int {
 	return (mass / 3) - 2
+}
+
+func SumModuleFuel(masses []int) int {
+	sum := 0
+	for _, mass := range(masses) {
+		sum += ModuleFuel(mass)
+	}
+	return sum
 }
 
 func ModuleFuelFuel(mass int) int {
@@ -80,8 +77,15 @@ func ModuleFuelFuel(mass int) int {
 	return fuel
 }
 
-var Input1 = `
-76542
+func SumModuleFuelFuel(masses []int) int {
+	sum := 0
+	for _, mass := range(masses) {
+		sum += ModuleFuelFuel(mass)
+	}
+	return sum
+}
+
+var Input1 = `76542
 97993
 79222
 55538

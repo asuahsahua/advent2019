@@ -3,37 +3,37 @@ package common
 import (
 	"strings"
 	"strconv"
-	"bufio"
-	"io"
 )
 
-func ReadInts(r io.Reader) (integers []int) {
-	scanner := bufio.NewScanner(r)
-
-	// Does Scan() take care of trim() or Atoi?
-	for scanner.Scan() {
-		text := scanner.Text()
-		if text == "" {
-			continue
-		}
-
-		val, err := strconv.Atoi(scanner.Text())
-		PanicIfErr(err)
-
-		integers = append(integers, val)
-	}
-
-	return
+func ReadInts(str string) (integers []int) {
+	return SplitInts(str, "\n")
 }
 
 func SplitLines(str string) []string {
 	return strings.Split(str, "\n")
 }
 
+func SplitInts(str string, sep string) []int {
+	integers := make([]int, 0)
+	split := strings.Split(str, sep)
+	for _, v := range(split) {
+		val, err := strconv.Atoi(v)
+		PanicIfErr(err)
+
+		integers = append(integers, val)
+	}
+
+	return integers
+}
+
 func CommaSeparatedToInt(str string) (integers []int) {
+	return SplitInts(str, ",")
+}
+
+func CommaSeparatedToInt64(str string) (integers []int64) {
 	splitUp := strings.Split(str, ",")
 	for _, v := range(splitUp) {
-		val, err := strconv.Atoi(v)
+		val, err := strconv.ParseInt(v, 10, 64)
 		PanicIfErr(err)
 
 		integers = append(integers, val)

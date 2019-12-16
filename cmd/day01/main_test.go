@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/asuahsahua/advent2019/cmd/common"
 	"testing"
 	. "github.com/stretchr/testify/assert"
 )
@@ -32,4 +33,10 @@ func TestModuleFuelFuel(t *testing.T) {
     // The fuel required by a module of mass 100756 and its fuel is: 33583 +
     // 11192 + 3728 + 1240 + 411 + 135 + 43 + 12 + 2 = 50346.
 	Equal(t, 50346, ModuleFuelFuel(100756))
+}
+
+func TestConfirmedAnswer(t *testing.T) {
+	masses := common.SplitInts(Input1, "\n")
+	Equal(t, 3154112, SumModuleFuel(masses))
+	Equal(t, 4728317, SumModuleFuelFuel(masses))
 }

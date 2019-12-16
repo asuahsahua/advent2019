@@ -38,3 +38,9 @@ U7,R6,D4,L4`
 	wire3a, wire3b := InputToWires(input3)
 	Equal(t, 30, ClosestIntersectionBySteps(wire3a, wire3b))
 }
+
+func TestConfirmedAnswer(t *testing.T) {
+	wireA, wireB := InputToWires(Input)
+	Equal(t, 375, ClosestIntersectionDistance(wireA, wireB))
+	Equal(t, 14746, ClosestIntersectionBySteps(wireA, wireB))
+}

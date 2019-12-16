@@ -5,8 +5,9 @@ import (
 )
 
 type IntcodeMachine struct{
-	InstPtr int   // Instruction Pointer
 	Memory  []int // Memory
+	InstPtr int   // Instruction Pointer
+	RelativeBase int // Relative Base for Relative Mode parameters
 	OnFire  bool  // Has caught fire?
 
 	Input   chan int
@@ -14,11 +15,15 @@ type IntcodeMachine struct{
 }
 
 func NewIntcodeMachine(program []int) *IntcodeMachine {
-	memory := make([]int, len(program))
+	// Day 9: "The computer's available memory should be much larger than the initial program"
+	// Just give 4KB of memory to each program for now
+	memory := make([]int, 4 * 1024)
 	copy(memory, program)
 
 	return &IntcodeMachine{
 		InstPtr: 0,
+		// Day 9: The relative base starts at 0
+		RelativeBase: 0,
 		Memory: memory,
 		OnFire: false,
 

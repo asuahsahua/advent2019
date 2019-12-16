@@ -8,6 +8,7 @@ import (
 const (
 	PM_POINTER  = 0
 	PM_IMMEDIATE = 1
+	PM_RELATIVE = 2
 )
 
 type InstructionContext struct{
@@ -31,31 +32,38 @@ type InstructionContext struct{
 //  C - mode of 1st parameter,  0 == position mode
 //  B - mode of 2nd parameter,  1 == immediate mode
 //  A - mode of 3rd parameter,  0 == position mode, omitted due to being a leading zero
-func (machine *IntcodeMachine) BuildInstructionContext(memptr int) *InstructionContext {
+func (m *IntcodeMachine) BuildInstructionContext(memptr int) *InstructionContext {
 	// Find the opcode, split it up
-	opcode := machine.Memory[memptr]
+	opcode := m.Memory[memptr]
 	opcodeExpanded := FillZeroes(DecimalDigitsReverse(opcode), 2 + MAX_PARAMETER_COUNT)
 
 	functionID := 10 * opcodeExpanded[1] + opcodeExpanded[0]
 	paramModes := opcodeExpanded[2:]
 	parameterCount := Instructions[functionID].paramCount
 
-	// Build parameters as pointers
+	// Build parameters as pointers TODO: Abstract to another function
 	params := []*int{}
 	for i := 0; i < parameterCount; i++ {
-		pvalue := &machine.Memory[memptr + 1 + i]
+		pvalue := &m.Memory[memptr + 1 + i]
 		switch paramModes[i] {
 		case PM_IMMEDIATE:
 			params = append(params, pvalue)
 		case PM_POINTER:
-			params = append(params, &machine.Memory[*pvalue])
+			params = append(params, &m.Memory[*pvalue])
+
+		// Day 9: The address a relative mode parameter refers to is itself plus
+		// the current relative base. When the relative base is 0, relative mode
+		// parameters and position mode parameters with the same value refer to
+		// the same address.
+		case PM_RELATIVE:
+			params = append(params, &m.Memory[m.RelativeBase + *pvalue])
 		default:
 			Panic("Unknown parameter mode %d", opcodeExpanded[i])
 		}
 	}
 
 	return &InstructionContext{
-		Machine: machine,
+		Machine: m,
 		FunctionID: functionID,
 		Parameters: params,
 		NextInstPtr: memptr + 1 + parameterCount,

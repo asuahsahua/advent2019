@@ -7,7 +7,7 @@ import (
 
 // This file holds nonspecific tests from each day's prompts
 
-// --- Day 5 - Part 2 ---
+// Day 5 - Part 2
 func TestDay05Part2(t *testing.T) {
 	// Using position mode, consider whether the input is equal to 8; output 1
 	// (if it is) or 0 (if it is not).
@@ -61,4 +61,14 @@ func TestDay05Part2(t *testing.T) {
 	Equal(t, 999, RunProgram(prog7, 7))
 	Equal(t, 1000, RunProgram(prog7, 8))
 	Equal(t, 1001, RunProgram(prog7, 9))
+}
+
+// Day 09 - Part 1
+func TestDay09Part1(t *testing.T) {
+	// Here are some example programs that use these features:
+	// takes no input and produces a copy of itself as output.
+	// prog1 := `109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99`
+
+    // 1102,34915192,34915192,7,4,7,99,0 should output a 16-digit number.
+    // 104,1125899906842624,99 should output the large number in the middle.
 }

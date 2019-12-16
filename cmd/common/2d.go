@@ -1,0 +1,62 @@
+package common 
+
+import (
+	"math"
+)
+
+// ------------ Wires -----------------
+type Point2D struct{
+	X int
+	Y int
+}
+
+func (p1 Point2D) Manhattan(p2 Point2D) int {
+	return AbsI(p1.X - p2.X) + AbsI(p1.Y - p2.Y)
+}
+
+// Determines the slope from one to the other as a reduced fraction
+func (p1 Point2D) SlopeTo(p2 Point2D) Point2D {
+	dx := p2.X - p1.X
+	dy := p2.Y - p1.Y 
+
+	gcd := GCD(dx, dy)
+	if gcd < 0 {
+		// we _need_ a positive gcd
+		gcd = -1 * gcd
+	}
+
+	return Point2D{
+		X: dx / gcd,
+		Y: dy / gcd,
+	}
+}
+
+// Add a point to another, like vectors
+func (p1 Point2D) Add(p2 Point2D) Point2D {
+	return Point2D {
+		X: p1.X + p2.X,
+		Y: p1.Y + p2.Y,
+	}
+}
+
+func (p1 Point2D) Sub(p2 Point2D) Point2D {
+	return Point2D {
+		X: p1.X - p2.X,
+		Y: p1.Y - p2.Y,
+	}
+}
+
+func (p1 Point2D) Dot(p2 Point2D) float64 {
+	return float64(p1.X * p2.X + p1.Y * p2.Y)
+}
+
+func (p Point2D) Magnitude() float64 {
+	return math.Sqrt(float64(p.X * p.X)) * math.Sqrt(float64(p.Y * p.Y))
+}
+
+// Gets the angle from Vector1 to Vector2 in radians
+func (p1 Point2D) Angle(p2 Point2D) float64 {
+	// cos(th) = u.v/(|u||v|)
+	cosT := p1.Dot(p2) / (p1.Magnitude() * p2.Magnitude())
+	return math.Acos(cosT)
+}

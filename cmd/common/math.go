@@ -58,3 +58,13 @@ func DecimalDigitsStr(str string) []int {
 	}
 	return digits
 }
+
+// find the greatest common divisor, euclidean algorithm
+func GCD(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}

@@ -64,16 +64,6 @@ func ClosestIntersectionBySteps(a *Wire, b *Wire) int {
 	return nearest
 }
 
-// ------------ Wires -----------------
-type Point2D struct{
-	X int
-	Y int
-}
-
-func (p1 Point2D) Manhattan(p2 Point2D) int {
-	return AbsI(p1.X - p2.X) + AbsI(p1.Y - p2.Y)
-}
-
 type WireSegment struct{
 	Start Point2D
 	End Point2D

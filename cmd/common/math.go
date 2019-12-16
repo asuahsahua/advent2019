@@ -48,3 +48,13 @@ func DecimalDigitsReverse(value int) []int {
 	}
 	return digits
 }
+
+// Converts a string of digits to an int slice of digits
+func DecimalDigitsStr(str string) []int {
+	digits := make([]int, 0)
+	for _, char := range str {
+		PanicIf(char < '0' || char > '9', "Character string should only contain integers")
+		digits = append(digits, int(char - '0'))
+	}
+	return digits
+}

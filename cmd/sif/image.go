@@ -10,6 +10,14 @@ type SpaceImage struct{
 	Layers []*Layer
 }
 
+// The digits indicate the color of the corresponding pixel: 0 is black, 1 is
+// white, and 2 is transparent.
+const (
+	C_BLACK = 0
+	C_WHITE = 1
+	C_TRANSPARENT = 2
+)
+
 func NewSpaceImage(height, width int, bytes []int) *SpaceImage {
 	layerSize := height * width
 	common.PanicIf(len(bytes) % layerSize != 0, "Expected bytes to be a multiple of the layer size")

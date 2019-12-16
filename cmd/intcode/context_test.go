@@ -14,7 +14,7 @@ func TestInstructionContextOpcode(t *testing.T) {
 	Equal(t, []int64{1002, 4, 3, 4, 33}, machine.Memory[0:5])
 
 	// Do some asserts
-	Equal(t, int64(2), ctx.FunctionID)
+	Equal(t, 2, ctx.FunctionID)
 	Equal(t, int64(33), *ctx.Parameters[0])
 	Equal(t, int64(3), *ctx.Parameters[1])
 	Equal(t, int64(33), *ctx.Parameters[2])

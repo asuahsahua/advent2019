@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	// --- Day 7: Amplification Circuit ---
 	// There are five amplifiers connected in series; each one receives an input
 	// signal and produces an output signal. They are connected such that the
 	// first amplifier's output leads to the second amplifier's input, the
@@ -38,12 +39,6 @@ func main() {
 	//                                                             |
 	//                                                             v
 	//                                                      (to thrusters)
-
-	// Most of the amplifiers are connected as they were before; amplifier A's
-	// output is connected to amplifier B's input, and so on. However, the
-	// output from amplifier E is now connected into amplifier A's input. This
-	// creates the feedback loop: the signal will be sent through the amplifiers
-	// many times.
 
 	bestFeedbackPhase := OptimizeFeedbackProgram(AmplifierControllerSoftware)
 	Part2("%d", FeedbackProgramRun(AmplifierControllerSoftware, bestFeedbackPhase))

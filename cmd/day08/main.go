@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	// --- Day 8: Space Image Format ---
 	// When you reach the rover, you discover that it's already in the process
 	// of rebooting! It's just waiting for someone to enter a BIOS password. The
 	// Elf responsible for the rover takes a picture of the password (your

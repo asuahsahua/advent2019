@@ -4,6 +4,10 @@ import (
 	. "github.com/asuahsahua/advent2019/cmd/common"
 )
 
+const (
+	CHAN_BUF = 2048
+)
+
 type IntcodeMachine struct{
 	Memory  []int64 // Memory
 	InstPtr int64   // Instruction Pointer
@@ -29,8 +33,9 @@ func NewIntcodeMachine(program []int64) *IntcodeMachine {
 
 		// Allow a buffered width of 10 for now, for laziness. 
 		// Hopefully things don't need to be buffered much more than this.
-		Input: make(chan int64, 10),
-		Output: make(chan int64, 10),
+		// edit: so much for that
+		Input: make(chan int64, CHAN_BUF),
+		Output: make(chan int64, CHAN_BUF),
 	}
 }
 

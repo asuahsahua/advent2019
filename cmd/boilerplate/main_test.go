@@ -5,6 +5,7 @@ import (
 	. "github.com/stretchr/testify/assert"
 )
 
-func TestExample(t *testing.T) {
+func TestConfirmedAnswer(t *testing.T) {
+	Equal(t, 1, 1)
 	Equal(t, 2, 2)
 }

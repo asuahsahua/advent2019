@@ -1,6 +1,7 @@
 package intcode
 
 import (
+	"github.com/asuahsahua/advent2019/cmd/common"
 	"testing"
 	. "github.com/stretchr/testify/assert"
 )
@@ -65,10 +66,19 @@ func TestDay05Part2(t *testing.T) {
 
 // Day 09 - Part 1
 func TestDay09Part1(t *testing.T) {
-	// Here are some example programs that use these features:
 	// takes no input and produces a copy of itself as output.
-	// prog1 := `109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99`
+	prog1 := common.SplitInt64s(`109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99`, `,`)
+	machine := NewIntcodeMachine(prog1)
+	Equal(t, prog1, machine.ReadAllOutput())
 
-    // 1102,34915192,34915192,7,4,7,99,0 should output a 16-digit number.
-    // 104,1125899906842624,99 should output the large number in the middle.
+	// output a 16-digit number.
+	prog2 := NewIntcodeMachineStr(`1102,34915192,34915192,7,4,7,99,0`)
+	prog2.Run()
+	out := common.DecimalDigits64(<- prog2.Output)
+	Equal(t, 16, len(out))
+
+	// output the large number in the middle.
+	prog3 := NewIntcodeMachineStr(`104,1125899906842624,99`)
+	prog3.Run()
+	Equal(t, int64(1125899906842624), <- prog3.Output)
 }

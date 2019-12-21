@@ -55,7 +55,6 @@ func ClosestIntersectionBySteps(a *Wire, b *Wire) int {
 	// Just going to turn this into a n^2 search space because whatevs, its day 3
 	nearest := 999999
 	for _, intersection := range(Intersections(a, b)) {
-		fmt.Printf("%v\n", intersection)
 		if intersection.CombinedSteps < nearest {
 			nearest = intersection.CombinedSteps
 		}

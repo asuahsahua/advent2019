@@ -60,3 +60,36 @@ func (p1 Point2D) Angle(p2 Point2D) float64 {
 	cosT := p1.Dot(p2) / (p1.Magnitude() * p2.Magnitude())
 	return math.Acos(cosT)
 }
+
+type BoundingBox struct{
+	MinX int
+	MaxX int
+	MinY int
+	MaxY int
+}
+
+func ResolveBoundingBox(points []Point2D) BoundingBox {
+	box := BoundingBox{
+		MinX: MAX_INT64,
+		MaxX: MIN_INT64,
+		MinY: MAX_INT64,
+		MaxY: MIN_INT64,
+	}
+
+	for _, point := range points {
+		if point.X > box.MaxX {
+			box.MaxX = point.X
+		}
+		if point.X < box.MinX {
+			box.MinX = point.X
+		}
+		if point.Y > box.MaxY {
+			box.MaxY = point.Y
+		}
+		if point.Y < box.MinY {
+			box.MinY = point.Y
+		}
+	}
+
+	return box
+}

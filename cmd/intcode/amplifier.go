@@ -50,7 +50,7 @@ func NewAmpChain(prog string, size int64) *AmpChain {
 
 		// Connect the output of the previous with the input of the new
 		if i > 0 {
-			machine.Input = amps[i-1].Output
+			go machine.ReadFrom(amps[i - 1])
 		}
 	}
 

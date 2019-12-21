@@ -1,5 +1,10 @@
 package common
 
+const (
+	MIN_INT64 = -9223372036854775808
+	MAX_INT64 = 9223372036854775807
+)
+
 func MinI64(a, b int64) int64 {
 	if a < b {
 		return a

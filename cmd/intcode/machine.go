@@ -11,11 +11,12 @@ const (
 type IntcodeMachine struct{
 	Memory  []int64 // Memory
 	InstPtr int64   // Instruction Pointer
-	RelativeBase int64 // Relative Base for Relative Mode parameters
-	OnFire  bool  // Has caught fire?
 
 	Input   chan int64
 	Output  chan int64
+
+	RelativeBase int64 // Relative Base for Relative Mode parameters
+	OnFire  bool  // Has caught fire?
 }
 
 func NewIntcodeMachine(program []int64) *IntcodeMachine {
@@ -26,16 +27,18 @@ func NewIntcodeMachine(program []int64) *IntcodeMachine {
 
 	return &IntcodeMachine{
 		InstPtr: 0,
-		// Day 9: The relative base starts at 0
-		RelativeBase: 0,
 		Memory: memory,
-		OnFire: false,
 
 		// Allow a buffered width of 10 for now, for laziness. 
 		// Hopefully things don't need to be buffered much more than this.
 		// edit: so much for that
 		Input: make(chan int64, CHAN_BUF),
 		Output: make(chan int64, CHAN_BUF),
+
+		// Has HCF'd yet
+		OnFire: false,
+		// Day 9: The relative base starts at 0
+		RelativeBase: 0,
 	}
 }
 

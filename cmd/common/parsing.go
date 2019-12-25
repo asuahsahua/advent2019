@@ -1,6 +1,7 @@
 package common
 
 import (
+	"regexp"
 	"strings"
 	"strconv"
 )
@@ -28,4 +29,13 @@ func SplitInts(str string, sep string) []int {
 
 func CommaSeparatedToInt(str string) (integers []int) {
 	return SplitInts(str, ",")
+}
+
+// Lazy converter to grab the first int looking thing in the string
+// No guarantees! Panics a lot!
+var lazyIntRex = regexp.MustCompile(`(-?\d+)`)
+func LazyInt(str string) int {
+	val, err := strconv.Atoi(lazyIntRex.FindString(str))
+	PanicIfErr(err)
+	return val
 }

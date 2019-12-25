@@ -4,7 +4,6 @@ import (
 	"math"
 )
 
-// ------------ Wires -----------------
 type Point2D struct{
 	X int
 	Y int

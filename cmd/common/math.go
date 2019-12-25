@@ -21,8 +21,8 @@ func AbsI(a int) int {
 	return a
 }
 
-// Returns a slice of digits representing the different decimal positions from
-// most significant to least significant digit
+// DecimalDigits returns a slice of digits representing the different decimal
+// positions from most significant to least significant digit
 // DecimalDigits(123456) == [1, 2, 3, 4, 5, 6]
 func DecimalDigits(value int) []int {
 	// Turns out doing it in reverse first is easier
@@ -30,36 +30,36 @@ func DecimalDigits(value int) []int {
 
 	// Need to reverse the digits now
 	reversed := make([]int, len(digits))
-	for i, digit := range(digits) {
-		reversed[len(digits) - i - 1] = digit
+	for i, digit := range digits {
+		reversed[len(digits)-i-1] = digit
 	}
 
 	return reversed
 }
 
-// Returns a slice of digits representing the different decimal positions from
-// least significant to most significant digit
+// DecimalDigitsReverse returns a slice of digits representing the different
+// decimal positions from least significant to most significant digit
 // DecimalDigitsReverse(123456) == [6, 5, 4, 3, 2, 1]
 func DecimalDigitsReverse(value int) []int {
 	digits := make([]int, 0)
 	for value > 0 {
-		digits = append(digits, int(value) % 10)
+		digits = append(digits, int(value)%10)
 		value = value / 10
 	}
 	return digits
 }
 
-// Converts a string of digits to an int slice of digits
+// DecimalDigitsStr converts a string of digits to an int slice of digits
 func DecimalDigitsStr(str string) []int {
 	digits := make([]int, 0)
 	for _, char := range str {
 		PanicIf(char < '0' || char > '9', "Character string should only contain integers")
-		digits = append(digits, int(char - '0'))
+		digits = append(digits, int(char-'0'))
 	}
 	return digits
 }
 
-// find the greatest common divisor, euclidean algorithm
+// GCD finds the greatest common divisor using the Euclidean algorithm
 func GCD(a, b int) int {
 	for b != 0 {
 		t := b
@@ -67,4 +67,16 @@ func GCD(a, b int) int {
 		a = t
 	}
 	return a
+}
+
+// LCM finds the Least Common Multiple of many integers
+func LCM(a, b int, ints ...int) int {
+	// For a, b ∈ ℕ, a*b = LCM(a, b)*GCD(a, b)
+	lcm := (a * b) / GCD(a, b)
+
+	for _, c := range ints {
+		lcm = LCM(lcm, c)
+	}
+
+	return lcm
 }

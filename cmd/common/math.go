@@ -80,3 +80,13 @@ func LCM(a, b int, ints ...int) int {
 
 	return lcm
 }
+
+// CeilDiv divides the numerator by the denominator and returns the ceiling
+func CeilDiv(num, denom int) int {
+	div := num / denom
+	mod := num % denom
+	if mod > 0 {
+		return div + 1
+	}
+	return div
+}

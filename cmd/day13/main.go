@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	. "github.com/asuahsahua/advent2019/cmd/common"
 	"github.com/asuahsahua/advent2019/cmd/intcode"
 )
@@ -19,8 +21,15 @@ var GameCode = `1,380,379,385,1008,2235,768501,381,1005,381,12,99,109,2236,1102,
 // ArcadeCabinet runs Intcode software like the game the Elves sent (your puzzle
 // input). It has a primitive screen capable of drawing square tiles on a grid.
 type ArcadeCabinet struct {
-	Processor *intcode.IntcodeMachine
-	Screen    map[Point2D]TileType
+	Processor   *intcode.IntcodeMachine
+	Screen      map[Point2D]TileType
+	PlayerScore int
+	Displaying  bool
+
+	// Bot related
+	BotEnabled bool
+	BallX      int
+	PaddleX    int
 }
 
 // NewArcadeCabinet instantiates our cabinet with the game code from the elves
@@ -33,25 +42,40 @@ func NewArcadeCabinet() *ArcadeCabinet {
 
 // Run executes the game in the arcade cabinet
 func (ac *ArcadeCabinet) Run() {
-	// The software draws tiles to the screen with output instructions: every
-	// three output instructions specify the x position (distance from the left),
-	// y position (distance from the top), and tile id.
 	go ac.Processor.Run()
 
-	// (assuming pretty hard here that outputs are in 3-tuples), otherwise this is
-	// just going to deadlock)
-	for xPos := range ac.Processor.Output {
-		yPos := <-ac.Processor.Output
-		px := Point2D{
-			X: int(xPos),
-			Y: int(yPos),
-		}
-		ac.Screen[px] = TileType(<-ac.Processor.Output)
+	// Every three output instructions specify the x position (distance from the
+	// left), y position (distance from the top), and tile id.
+	for arg1 := range ac.Processor.Output {
+		arg2 := <-ac.Processor.Output
+		arg3 := <-ac.Processor.Output
+		ac.HandleOutput(arg1, arg2, arg3)
 	}
 }
 
-func (ac *ArcadeCabinet) SetTile(px Point2D, tileId TileType) {
-	ac.Screen[px] = tileId
+func (ac *ArcadeCabinet) HandleOutput(arg1, arg2, arg3 int64) {
+	// When three output instructions specify X=-1, Y=0, the third output
+	// instruction is not a tile; the value instead specifies the new score to
+	// show in the segment display.
+	if arg1 == -1 && arg2 == 0 {
+		ac.PlayerScore = int(arg3)
+		return
+	}
+
+	px := Point2D{
+		X: int(arg1),
+		Y: int(arg2),
+	}
+	tile := TileType(arg3)
+	ac.Screen[px] = tile
+
+	if tile == BallTile {
+		ac.BallX = px.X
+		ac.AdjustPaddle()
+	} else if tile == HorizontalPaddleTile {
+		ac.PaddleX = px.X
+		// ac.AdjustPaddle()
+	}
 }
 
 // TileType is interpreted as follows:
@@ -70,17 +94,125 @@ const (
 	BallTile TileType = 4
 )
 
+// CountTiles counts how many tiles of the given type there are on the screen
+func (ac *ArcadeCabinet) CountTiles(tileType TileType) int {
+	count := 0
+	for _, tile := range ac.Screen {
+		if tile == tileType {
+			count++
+		}
+	}
+	return count
+}
+
+// --- Part Two ---
+// The game didn't run because you didn't put in any quarters. Unfortunately,
+// you did not bring any quarters. Memory address 0 represents the number of
+// quarters that have been inserted; set it to 2 to play for free.
+
+// FreePlay lets you play for free
+func (ac *ArcadeCabinet) FreePlay() {
+	ac.Processor.Memory[0] = 2
+}
+
+// The arcade cabinet has a joystick that can move left and right. The software
+// reads the position of the joystick with input instructions:
+type JoystickInput int
+
+const (
+	// If the joystick is in the neutral position, provide 0.
+	Neutral JoystickInput = 0
+	// If the joystick is tilted to the left, provide -1.
+	Left JoystickInput = -1
+	// If the joystick is tilted to the right, provide 1.
+	Right JoystickInput = 1
+)
+
+// PrintScreen prints the current status of the screen
+func (ac *ArcadeCabinet) PrintScreen() {
+	if !ac.Displaying {
+		return
+	}
+
+	box := ac.ScreenResolution()
+	printOutput := make([]byte, 0)
+	for y := box.MinY; y <= box.MaxY; y++ {
+		for x := box.MinX; x <= box.MaxX; x++ {
+			tile := ac.Screen[Point2D{x, y}]
+			printOutput = append(printOutput, tile.ToChar())
+		}
+		printOutput = append(printOutput, '\n')
+	}
+
+	time.Sleep(time.Millisecond * 10)
+	ClearScreen()
+	Print("%s", printOutput)
+}
+
+// ScreenResolution determines the screen resolution for the drawn blocks
+func (ac *ArcadeCabinet) ScreenResolution() BoundingBox {
+	pixels := make([]Point2D, 0)
+	for px := range ac.Screen {
+		pixels = append(pixels, px)
+	}
+	return ResolveBoundingBox(pixels)
+}
+
+// ToChar translates a TileType to it's visual representation
+func (t TileType) ToChar() byte {
+	switch t {
+	case EmptyTile:
+		return ' '
+	case WallTile:
+		return '|'
+	case BlockTile:
+		return '#'
+	case HorizontalPaddleTile:
+		return '-'
+	case BallTile:
+		return 'O'
+	default:
+		Panic("Unrecognized tile type %d", t)
+		return 0
+	}
+}
+
+// BeatGame enables the bot, runs the game, and returns the score
+func (ac *ArcadeCabinet) BeatGame() int {
+	ac.FreePlay()
+	ac.BotEnabled = true
+
+	ac.Run()
+
+	return ac.PlayerScore
+}
+
+// AdjustPaddle adjusts the position of the paddle to follow the ball if
+// bot mode is enabled
+func (ac *ArcadeCabinet) AdjustPaddle() {
+	if !ac.BotEnabled {
+		return
+	}
+
+	if ac.BallX < ac.PaddleX {
+		ac.Processor.Input <- int64(Left)
+	} else if ac.BallX > ac.PaddleX {
+		ac.Processor.Input <- int64(Right)
+	} else {
+		ac.Processor.Input <- int64(Neutral)
+	}
+
+	ac.PrintScreen()
+}
+
 func main() {
 	// Start the game. How many block tiles are on the screen when the game exits?
 	cab := NewArcadeCabinet()
 	cab.Run()
-
 	// Count the number of block tiles
-	count := 0
-	for _, tile := range cab.Screen {
-		if tile == BlockTile {
-			count++
-		}
-	}
-	Part1("%d block tiles", count)
+	Part1("%d block tiles", cab.CountTiles(BlockTile))
+
+	// Beat the game by breaking all the blocks. What is your score after the last
+	// block is broken?
+	Part2("%d score", NewArcadeCabinet().BeatGame())
 }

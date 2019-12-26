@@ -1,11 +1,15 @@
 package main
 
 import (
-	"testing"
 	. "github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestConfirmedAnswer(t *testing.T) {
-	Equal(t, 1, 1)
-	Equal(t, 2, 2)
+	cab := NewArcadeCabinet()
+	cab.Run()
+	Equal(t, 320, cab.CountTiles(BlockTile))
+
+	// Part 2
+	Equal(t, 15156, NewArcadeCabinet().BeatGame())
 }

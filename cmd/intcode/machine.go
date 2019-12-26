@@ -8,31 +8,31 @@ const (
 	CHAN_BUF = 2048
 )
 
-type IntcodeMachine struct{
+type IntcodeMachine struct {
 	Memory  []int64 // Memory
 	InstPtr int64   // Instruction Pointer
 
-	Input   chan int64
-	Output  chan int64
+	Input  chan int64
+	Output chan int64
 
 	RelativeBase int64 // Relative Base for Relative Mode parameters
-	OnFire  bool  // Has caught fire?
+	OnFire       bool  // Has caught fire?
 }
 
 func NewIntcodeMachine(program []int64) *IntcodeMachine {
 	// Day 9: "The computer's available memory should be much larger than the initial program"
 	// Just give 4KB of memory to each program for now
-	memory := make([]int64, 4 * 1024)
+	memory := make([]int64, 4*1024)
 	copy(memory, program)
 
 	return &IntcodeMachine{
 		InstPtr: 0,
-		Memory: memory,
+		Memory:  memory,
 
-		// Allow a buffered width of 10 for now, for laziness. 
+		// Allow a buffered width of 10 for now, for laziness.
 		// Hopefully things don't need to be buffered much more than this.
 		// edit: so much for that
-		Input: make(chan int64, CHAN_BUF),
+		Input:  make(chan int64, CHAN_BUF),
 		Output: make(chan int64, CHAN_BUF),
 
 		// Has HCF'd yet
@@ -54,7 +54,7 @@ func RunProgram(program string, input int64) (output int64) {
 
 	machine.Run()
 
-	return <- machine.Output 
+	return <-machine.Output
 }
 
 func (m *IntcodeMachine) Run() {

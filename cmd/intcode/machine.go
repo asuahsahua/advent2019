@@ -15,8 +15,10 @@ type IntcodeMachine struct {
 	Input  chan int64
 	Output chan int64
 
+	Interrupt chan Interrupt
+	State *MachineState
+
 	RelativeBase int64 // Relative Base for Relative Mode parameters
-	OnFire       bool  // Has caught fire?
 }
 
 func NewIntcodeMachine(program []int64) *IntcodeMachine {
@@ -35,8 +37,7 @@ func NewIntcodeMachine(program []int64) *IntcodeMachine {
 		Input:  make(chan int64, CHAN_BUF),
 		Output: make(chan int64, CHAN_BUF),
 
-		// Has HCF'd yet
-		OnFire: false,
+		State: NewMachineState(),
 		// Day 9: The relative base starts at 0
 		RelativeBase: 0,
 	}
@@ -58,7 +59,11 @@ func RunProgram(program string, input int64) (output int64) {
 }
 
 func (m *IntcodeMachine) Run() {
-	for m.OnFire == false {
+	PanicIf(m.State.Get() != Suspended, "Cannot only run intcode machine from a suspended state")
+
+	m.State.Set(Running)
+
+	for m.State.Get() == Running {
 		m.RunStep()
 	}
 }

@@ -9,6 +9,7 @@ const (
 	CHAN_BUF = 2048
 )
 
+/* when updating this be sure to update New*() and Snapshot() */
 type IntcodeMachine struct {
 	// Memory Management
 	Memory  []int64

@@ -15,7 +15,7 @@ type InstructionContext struct{
 	// The machine processing this instruction
 	Machine *IntcodeMachine
 	// The ID for the function that we're executing
-	FunctionID int
+	FunctionID Instruction
 	// CAUTION! DirectMemoryAccess to the memory in Machine!
 	Parameters []*int64
 	// The next instruction pointer after this instruction runs
@@ -36,13 +36,13 @@ func (m *IntcodeMachine) BuildInstructionContext(memptr int64) *InstructionConte
 	// Find the opcode, split it up
 	opcode := m.Memory[memptr]
 	opcodeExpanded := FillZeroes(DecimalDigitsReverse(int(opcode)), 2 + MAX_PARAMETER_COUNT)
-	functionID := 10 * opcodeExpanded[1] + opcodeExpanded[0]
+	instruction := Instruction(10 * opcodeExpanded[1] + opcodeExpanded[0])
+	paramCount := instruction.ParameterCount()
 	paramModes := opcodeExpanded[2:]
-	parameterCount := Instructions[functionID].paramCount
 
 	// Build parameters as pointers TODO: Abstract to another function
 	params := []*int64{}
-	for i := int64(0); i < parameterCount; i++ {
+	for i := int64(0); i < paramCount; i++ {
 		pvalue := &m.Memory[memptr + 1 + i]
 		switch paramModes[i] {
 		case PM_IMMEDIATE:
@@ -63,8 +63,8 @@ func (m *IntcodeMachine) BuildInstructionContext(memptr int64) *InstructionConte
 
 	return &InstructionContext{
 		Machine: m,
-		FunctionID: functionID,
+		FunctionID: instruction,
 		Parameters: params,
-		NextInstPtr: memptr + 1 + parameterCount,
+		NextInstPtr: memptr + 1 + paramCount,
 	}
 }

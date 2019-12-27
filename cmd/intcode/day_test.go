@@ -73,12 +73,12 @@ func TestDay09Part1(t *testing.T) {
 
 	// output a 16-digit number.
 	prog2 := NewIntcodeMachineStr(`1102,34915192,34915192,7,4,7,99,0`)
-	prog2.Run()
+	go prog2.Run()
 	out := common.DecimalDigits64(<- prog2.Output)
 	Equal(t, 16, len(out))
 
 	// output the large number in the middle.
 	prog3 := NewIntcodeMachineStr(`104,1125899906842624,99`)
-	prog3.Run()
+	go prog3.Run()
 	Equal(t, int64(1125899906842624), <- prog3.Output)
 }

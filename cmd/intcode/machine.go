@@ -2,6 +2,7 @@ package intcode
 
 import (
 	. "github.com/asuahsahua/advent2019/cmd/common"
+	"sync"
 )
 
 const (
@@ -9,16 +10,20 @@ const (
 )
 
 type IntcodeMachine struct {
-	Memory  []int64 // Memory
-	InstPtr int64   // Instruction Pointer
+	// Memory Management
+	Memory  []int64
+	InstPtr int64
+	// - RelativeBase is for relative-mode parameters (Day 9)
+	RelativeBase int64
 
+	// I/O
 	Input  chan int64
 	Output chan int64
 
+	// Interrupts and state management
 	Interrupt chan Interrupt
 	State *MachineState
-
-	RelativeBase int64 // Relative Base for Relative Mode parameters
+	PauseGroup *sync.WaitGroup
 }
 
 func NewIntcodeMachine(program []int64) *IntcodeMachine {
@@ -30,16 +35,15 @@ func NewIntcodeMachine(program []int64) *IntcodeMachine {
 	return &IntcodeMachine{
 		InstPtr: 0,
 		Memory:  memory,
+		// Day 9: The relative base starts at 0
+		RelativeBase: 0,
 
-		// Allow a buffered width of 10 for now, for laziness.
-		// Hopefully things don't need to be buffered much more than this.
-		// edit: so much for that
 		Input:  make(chan int64, CHAN_BUF),
 		Output: make(chan int64, CHAN_BUF),
 
+		Interrupt: make(chan Interrupt, CHAN_BUF),
 		State: NewMachineState(),
-		// Day 9: The relative base starts at 0
-		RelativeBase: 0,
+		PauseGroup: &sync.WaitGroup{},
 	}
 }
 
@@ -49,12 +53,13 @@ func NewIntcodeMachineStr(program string) *IntcodeMachine {
 	)
 }
 
+// Runs the program with the given input and returns the given output
+// Only really useful for dummy one-in-one-out programs, which is not going to be most programs.
 func RunProgram(program string, input int64) (output int64) {
 	machine := NewIntcodeMachineStr(program)
+	go machine.Run()
+
 	machine.Input <- input
-
-	machine.Run()
-
 	return <-machine.Output
 }
 

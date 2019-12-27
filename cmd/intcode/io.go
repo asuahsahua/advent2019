@@ -2,7 +2,7 @@ package intcode
 
 // Run the program to completion and read all the output out
 func (m *IntcodeMachine) ReadAllOutput() []int64 {
-	m.Run()
+	go m.Run()
 	out := make([]int64, 0)
 
 	for {

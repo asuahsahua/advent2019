@@ -20,7 +20,8 @@ type MachineStatusCode int
 const (
 	Suspended MachineStatusCode = 0
 	Running MachineStatusCode = 1
-	OnFire MachineStatusCode = 2
+	Paused MachineStatusCode = 2
+	OnFire MachineStatusCode = 99
 )
 
 func (ms *MachineState) Set(msc MachineStatusCode) {
@@ -34,4 +35,9 @@ func (ms *MachineState) Get() (msc MachineStatusCode) {
 	msc = ms.StatusCode
 	ms.Lock.RLocker().Unlock()
 	return
+}
+
+// Blocks until the state becomes msc
+func (ms *MachineState) WaitFor(msc MachineStatusCode) {
+	for ms.Get() != msc { }
 }

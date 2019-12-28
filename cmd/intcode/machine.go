@@ -14,8 +14,8 @@ type IntcodeMachine struct {
 	// Memory Management
 	Memory  []int64
 	InstPtr int64
-	// - RelativeBase is for relative-mode parameters (Day 9)
 	RelativeBase int64
+	MemoryLock *sync.Mutex
 
 	// I/O
 	Input  chan int64
@@ -38,6 +38,7 @@ func NewIntcodeMachine(program []int64) *IntcodeMachine {
 		Memory:  memory,
 		// Day 9: The relative base starts at 0
 		RelativeBase: 0,
+		MemoryLock: &sync.Mutex{},
 
 		Input:  make(chan int64, CHAN_BUF),
 		Output: make(chan int64, CHAN_BUF),
@@ -70,7 +71,9 @@ func (m *IntcodeMachine) Run() {
 	m.State.Set(Running)
 
 	for m.State.Get() == Running {
+		m.MemoryLock.Lock()
 		m.RunStep()
+		m.MemoryLock.Unlock()
 	}
 }
 

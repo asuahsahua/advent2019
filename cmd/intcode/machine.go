@@ -66,7 +66,7 @@ func RunProgram(program string, input int64) (output int64) {
 }
 
 func (m *IntcodeMachine) Run() {
-	PanicIf(m.State.Get() != Suspended, "Cannot only run intcode machine from a suspended state")
+	PanicIf(m.State.Get() != Suspended, "Can only run intcode machine from a suspended state")
 
 	m.State.Set(Running)
 

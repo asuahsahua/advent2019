@@ -60,6 +60,16 @@ func (p1 Point2D) Angle(p2 Point2D) float64 {
 	return math.Acos(cosT)
 }
 
+// CardinalAdjacents() returns the points cardinally adjacent to the point
+func (p1 Point2D) CardinalAdjacents() []Point2D {
+	return []Point2D{
+		p1.Add(Point2D{X: 1, Y: 0}),
+		p1.Add(Point2D{X: 0, Y: 1}),
+		p1.Add(Point2D{X: -1, Y: 0}),
+		p1.Add(Point2D{X: 0, Y: -1}),
+	}
+}
+
 type BoundingBox struct{
 	MinX int
 	MaxX int

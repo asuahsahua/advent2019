@@ -104,7 +104,7 @@ func I02_Mult(ctx *InstructionContext) {
 // given by its only parameter. For example, the instruction 3,50 would take
 // an input value and store it at address 50.
 func I03_Input(ctx *InstructionContext)  {
-	for {
+	for ctx.Machine.State.Get() == Running {
 		select {
 		case input := <- ctx.Machine.Input:
 			*ctx.Parameters[0] = input
@@ -119,7 +119,7 @@ func I03_Input(ctx *InstructionContext)  {
 // Opcode 4 outputs the value of its only parameter. For example, the
 // instruction 4,50 would output the value at address 50.
 func I04_Output(ctx *InstructionContext) {
-	for {
+	for ctx.Machine.State.Get() == Running {
 		select {
 		case ctx.Machine.Output <- *ctx.Parameters[0]:
 			return

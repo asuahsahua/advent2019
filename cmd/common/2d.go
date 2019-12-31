@@ -1,12 +1,20 @@
 package common 
 
 import (
+	"fmt"
 	"math"
 )
 
 type Point2D struct{
 	X int
 	Y int
+}
+
+func Point2DI(x, y int) Point2D {
+	return Point2D {
+		X: x,
+		Y: y,
+	}
 }
 
 func (p1 Point2D) Manhattan(p2 Point2D) int {
@@ -101,4 +109,13 @@ func ResolveBoundingBox(points []Point2D) BoundingBox {
 	}
 
 	return box
+}
+
+func (b BoundingBox) PrintPoints(cb func(Point2D) byte) {
+	for x := b.MinX; x <= b.MaxX; x++ {
+		for y := b.MinY; y <= b.MaxY; y++ {
+			fmt.Printf("%c", cb(Point2D{X: x, Y: y}))
+		}
+		fmt.Printf("\n")
+	}
 }

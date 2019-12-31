@@ -90,3 +90,11 @@ func CeilDiv(num, denom int) int {
 	}
 	return div
 }
+
+func SumInts(ints []int) int {
+	sum := 0
+	for _, val := range ints {
+		sum += val
+	}
+	return sum
+}
